@@ -38,15 +38,15 @@ let abbreviationGenerator = function (fullString) {
 function checkForm() {
     let inputName = document.getElementById('payName').value;
     let inputEmail = document.getElementById('payEmail').value;
-    let inputNumber = document.getElementById('payNumber').value;
+    let inputCurrency = document.getElementById('currencySelect').value;
 
     let transactionReference = abbreviationGenerator(inputName) + generate_ID();
     console.log(transactionReference);
     if (inputName){
         if (inputEmail){
-            if (inputNumber){
-                console.log(inputName,inputEmail,inputNumber)
-                makePayment(inputName,inputEmail,inputNumber,transactionReference);
+            if (inputCurrency){
+                console.log(inputName,inputEmail,inputCurrency)
+                makePayment(inputName,inputEmail,inputCurrency,transactionReference);
             }
 
         }else {
@@ -60,20 +60,20 @@ function checkForm() {
 document.getElementById('totalAmount').innerText = payment_amount;
 document.getElementsByClassName('currency').innerText = 'KES. ';
 
-function makePayment(inputName,inputEmail,inputNumber,tx_ref) {
+function makePayment(inputName,inputEmail,inputCurrency,tx_ref) {
     amount_to_pay = payment_amount;
     FlutterwaveCheckout({
         public_key: "FLWPUBK-ae68600a9e39f08764f156cf16ac9e2c-X",
         tx_ref: tx_ref,
         amount: amount_to_pay,
-        currency: "KES",
+        currency: inputCurrency,
         /*meta: {
             consumer_id: 23,
             consumer_mac: "92a3-912ba-1192a",
         },*/
         customer: {
             email: inputEmail,
-            phone_number: inputNumber,
+            phone_number: '',
             name: inputName
         },
         callback: function (data) {
@@ -128,4 +128,29 @@ let logger = function (data) {
         }
     });
 }
+console.log('getting');
+function populateCurrencies() {
+    var select = document.getElementById("currencySelect");
+    var options = [
+        {currency: 'KES', description: 'Kenyan shillings'},
+        {currency: 'NGN', description: 'Nigerian naira'},
+        {currency: 'UGX', description: 'Ugandan shillings'},
+        {currency: 'GHS', description: 'Ghanaian shillings'},
+        {currency: 'USD', description: 'United states dollar'},
+        {currency: 'GBP', description: 'Great britain pounds'},
+        {currency: 'EUR', description: 'European euro'},
+        {currency: 'ZAR', description: 'Zimbabwean rands'},
+        {currency: 'TZS', description: 'Tanzanian shillings'}
+    ];
+
+    for(var i = 0; i < options.length; i++) {
+        var opt = options[i];
+        var el = document.createElement("option");
+        el.textContent = opt.description + ' (' + opt.currency + ')';
+        el.value = opt.currency;
+        select.appendChild(el);
+    }
+}
+
+populateCurrencies();
 
